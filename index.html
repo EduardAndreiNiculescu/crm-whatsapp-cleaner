@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Contacts Cleaner & Management Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Header Banner -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>CRM Contact Manager & WhatsApp Tracker</h1>
+                    <span class="badge">Cleaned & Tagged (Whapp Succes 1 / Whapp Failed 1)</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <a id="download-raw-updated-btn" href="data/contacts_tagged_raw.csv" download class="btn btn-secondary">
+                    <i class="fa-solid fa-file-csv"></i> Descărcare Raw + Tags CSV
+                </a>
+                <a id="download-csv-btn" href="data/contacts_cleaned.csv" download class="btn btn-primary">
+                    <i class="fa-solid fa-download"></i> Descărcare CRM Curățat CSV
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Dashboard Grid -->
+            <section class="stats-section">
+                <div class="stat-card blue">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Înregistrări Inițiale</span>
+                        <h2 id="stat-original">-</h2>
+                        <span class="stat-sub">Export brut din CRM</span>
+                    </div>
+                </div>
+
+                <div class="stat-card green">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Contacte Curățate Unice</span>
+                        <h2 id="stat-cleaned">-</h2>
+                        <span class="stat-sub" id="stat-merged">duplicate comasate</span>
+                    </div>
+                </div>
+
+                <div class="stat-card emerald">
+                    <div class="stat-icon">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">whapp succes 1</span>
+                        <h2 id="stat-whapp-success">-</h2>
+                        <span class="stat-sub">Mesaj livrat / citit cu succes</span>
+                    </div>
+                </div>
+
+                <div class="stat-card rose">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">whapp failed 1</span>
+                        <h2 id="stat-whapp-failed">-</h2>
+                        <span class="stat-sub">Întrerupt / Insufficient funds / Rate limit</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters & Search Toolbar -->
+            <section class="toolbar-section">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Caută după Nume, Email, Telefon sau Tag...">
+                    <button id="clear-search" class="clear-btn" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fa-brands fa-whatsapp"></i> Status WhatsApp:</label>
+                    <select id="whapp-filter">
+                        <option value="all">Toate Contactele</option>
+                        <option value="succes">whapp succes 1</option>
+                        <option value="failed">whapp failed 1</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label><i class="fa-solid fa-tags"></i> Filtru Tag-uri:</label>
+                    <select id="tag-filter">
+                        <option value="all">Toate Tag-urile</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Contacts Data Table -->
+            <section class="table-container">
+                <div class="table-header-info">
+                    <span id="results-count">Se încarcă contactele...</span>
+                    <div class="table-actions">
+                        <span class="legend-item"><span class="dot green"></span> whapp succes 1</span>
+                        <span class="legend-item"><span class="dot rose"></span> whapp failed 1</span>
+                        <span class="legend-item"><span class="dot gray"></span> Fără Tag Whapp</span>
+                    </div>
+                </div>
+
+                <div class="responsive-table-wrapper">
+                    <table class="contacts-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nume Completo</th>
+                                <th>Status WhatsApp</th>
+                                <th>Telefon</th>
+                                <th>Email</th>
+                                <th>Tag-uri</th>
+                                <th>Data Creării</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contacts-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container">
+                    <div class="rows-per-page">
+                        <span>Afișează:</span>
+                        <select id="page-size-select">
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                        </select>
+                    </div>
+
+                    <div class="pagination-controls">
+                        <button id="prev-page-btn" class="pg-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="page-indicator">Pagina 1 din 20</span>
+                        <button id="next-page-btn" class="pg-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Contact Detail Modal -->
+    <div id="contact-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title">Detalii Contact</h3>
+                <button id="close-modal-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content inserted via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

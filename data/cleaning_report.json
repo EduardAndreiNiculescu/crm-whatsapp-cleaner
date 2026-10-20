@@ -1,0 +1,15 @@
+{
+  "total_original": 139,
+  "total_junk_removed": 4,
+  "merged_duplicates_count": 29,
+  "total_cleaned_records": 106,
+  "named_contacts_count": 100,
+  "unnamed_contacts_count": 6,
+  "both_phone_and_email": 85,
+  "phone_only": 17,
+  "email_only": 4,
+  "completion_rate_percent": 80.2,
+  "whapp_total_processed": 98,
+  "whapp_succes_count": 72,
+  "whapp_failed_count": 15
+}
